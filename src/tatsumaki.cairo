@@ -23,4 +23,26 @@ mod Tatsumaki {
         nullifier_hashes: LegacyMap::<felt252, bool>,
         pending_commit: LegacyMap::<ContractAddress, felt252>
     }
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        Deposit: Deposit,
+        Withdrawal: Withdrawal
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct Deposit {
+        commitment: felt252,
+        leaf_index: usize,
+        timestamp: u64
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct Withdrawal {
+        to: ContractAddress,
+        nullifier_hash: felt252,
+        relayer: ContractAddress,
+        fee: u128
+    }
 }
