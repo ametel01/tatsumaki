@@ -1,11 +1,6 @@
 use starknet::ContractAddress;
 
-#[derive(Drop, Serde)]
-struct Proof {
-    a: Array<felt252>,
-    b: Array<Array<felt252>>,
-    c: Array<felt252>
-}
+use tatsumaki::Proof;
 
 #[starknet::interface]
 trait IWithdrawVerifier<TState> {
