@@ -45,4 +45,73 @@ mod Tatsumaki {
         relayer: ContractAddress,
         fee: u128
     }
+
+    /// # Parameters
+    /// * `deposit_verifier`: The address of the deposit SNARK verifier for this contract.
+    /// * `withdraw_verifier`: The address of the withdraw SNARK verifier for this contract.
+    /// * `denomination`: Transfer amount for each deposit.
+    /// * `merkle_tree_height`: The height of deposits' Merkle Tree.
+    #[constructor]
+    fn constructor(
+        ref self: ContractState,
+        deposit_verifier: ContractAddress,
+        withdraw_verifier: ContractAddress,
+        denomination: u128,
+        merkle_tree_height: u128
+    ) {
+        self.initializer(deposit_verifier, withdraw_verifier, denomination, merkle_tree_height);
+    }
+
+    /// Let users delete a previously committed commitment hash and withdraw 1 ether they deposited alongside it.
+    fn clear(ref self: ContractState) {}
+
+    /// Lets users commit with 1 ether and a commitment hash which they can add into the tree whenever they want.
+    /// # Parameters
+    /// * `commitment`: Commitment hash of user's deposit.
+    fn commit(ref self: ContractState, commitment: felt252) {}
+
+    /// Lets users add their committed `commitmentHash` to the current merkle root.
+    /// # Arguments
+    /// * `proof` - Proof of correct chain addition of `pendingCommit[msg.sender]` to the current merkle root.
+    /// * `new_root` - New root after adding `pendingCommit[msg.sender]` into current merkle root.
+    fn deposit(ref self: ContractState, proof: Proof, new_root: felt252) {}
+
+    /// Withdraw a deposit from the contract.
+    /// `proof` is a zkSNARK proof data, and `input` is an array of circuit public inputs.
+    /// `input` array consists of:
+    ///   - merkle root of all deposits in the contract
+    ///   - hash of unique deposit nullifier to prevent double spends
+    ///   - the recipient of funds
+    ///   - optional fee that goes to the transaction sender (usually a relay)
+    fn withdraw(
+        proof: Proof,
+        root: felt252,
+        nullifier_hashe: felt252,
+        recipient: ContractAddress,
+        relayer: ContractAddress,
+        fee: u128
+    ) {}
+
+    #[generate_trait]
+    impl Private of PrivateTrait {
+        fn initializer(
+            ref self: ContractState,
+            deposit_verifier: ContractAddress,
+            withdraw_verifier: ContractAddress,
+            denomination: u128,
+            merkle_tree_height: u128
+        ) {}
+    }
+
+    /// This function is defined in a child contract.
+    fn process_deposit(ref self: ContractState) {}
+
+    /// This function is defined in a child contract.
+    fn process_withdraw(
+        ref self: ContractState, recipient: ContractAddress, relayer: ContractAddress, fee: u128
+    ) {}
+
+    fn is_known_root(ref self: ContractState, root: felt252) -> bool {
+        false
+    }
 }
